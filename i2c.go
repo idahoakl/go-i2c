@@ -54,7 +54,7 @@ func (this *I2C) Write(addr uint8, buf []byte) (int, error) {
 
 func (this *I2C) writeNoSync(addr uint8, buf []byte) (int, error) {
 	if e := this.setAddress(addr); e != nil {
-		return nil, e
+		return 0, e
 	}
 
 	return this.rc.Write(buf)
@@ -84,7 +84,7 @@ func (this *I2C) Read(addr uint8, p []byte) (int, error) {
 
 func (this *I2C) readNoSync(addr uint8, p []byte) (int, error) {
 	if e := this.setAddress(addr); e != nil {
-		return nil, e
+		return 0, e
 	}
 
 	return this.rc.Read(p)
