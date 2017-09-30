@@ -11,8 +11,8 @@ package i2c
 import (
 	"fmt"
 	"os"
-	"syscall"
 	"sync"
+	"syscall"
 )
 
 const (
@@ -21,8 +21,9 @@ const (
 
 // I2C represents a connection to an i2c device.
 type I2C struct {
-	rc *os.File
+	rc  *os.File
 	mtx *sync.Mutex
+	Bus int
 }
 
 // New opens a connection to an i2c device.
@@ -33,8 +34,9 @@ func NewI2C(bus int) (*I2C, error) {
 	}
 
 	this := &I2C{
-		rc: f,
+		rc:  f,
 		mtx: &sync.Mutex{},
+		Bus: bus,
 	}
 	return this, nil
 }
@@ -74,7 +76,6 @@ func (this *I2C) writeByteNoSync(addr uint8, b byte) (int, error) {
 	return this.writeNoSync(addr, buf[:])
 }
 
-
 func (this *I2C) Read(addr uint8, p []byte) (int, error) {
 	this.mtx.Lock()
 	defer this.mtx.Unlock()
@@ -89,7 +90,6 @@ func (this *I2C) readNoSync(addr uint8, p []byte) (int, error) {
 
 	return this.rc.Read(p)
 }
-
 
 func (this *I2C) Close() error {
 	this.mtx.Lock()
